@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 export const registerUser = async (
     name: string,
     email: string,
-    password: string
+    password: string,
+    phone: string
 ) => {
     const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -21,6 +22,7 @@ export const registerUser = async (
             name,
             email,
             password: hashedPassword,
+            phone
         },
     });
 
