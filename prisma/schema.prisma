@@ -10,6 +10,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -17,8 +18,11 @@ model User {
   name String
   email String @unique
   password String
+  phone String?
   role String @default("user")
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   bookings Booking[]
   memberships UserMembership[]
@@ -32,6 +36,11 @@ model Court {
   description String?
   image String?
 
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   bookings Booking[]
 }
 
@@ -40,8 +49,10 @@ model Booking {
   bookingDate DateTime
   startTime String
   endTime String
-  status String @default("pending")
+  status BookingStatus @default(pending)
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   userId Int
   courtId Int
@@ -71,4 +82,11 @@ model UserMembership {
 
   user User @relation(fields: [userId], references: [id])
   membership Membership @relation(fields: [membershipId], references: [id])
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
 }
